@@ -8,20 +8,21 @@ import { Product } from '../common/product';
 })
 export class ProductService {
   
-  private baseUrl = 'http://localhost:8090/api/products'
+  //é possivel escrever ?size=100 no fim da url e ter todos os itens mostrados. MAS ISSO É UMA GAMBIARRA
+  private baseUrl = 'http://localhost:8090/api/productEntities'
 
   constructor(private httpClient: HttpClient) { }
 
   getProductList(): Observable<Product[]> {
     return this.httpClient.get<GetResponse>(this.baseUrl).pipe(
       tap(response => console.log(response)),
-      map(response => response._embedded.products)
+      map(response => response._embedded.productEntities)
     );
   }
 }
 
 interface GetResponse{
   _embedded: {
-    products: Product[];
+    productEntities: Product[];
   }
 }
