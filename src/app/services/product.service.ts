@@ -2,32 +2,45 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
 import { Product } from '../common/product';
+import { ProductCategory } from '../common/product-category';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
   
-  //é possivel escrever ?size=100 no fim da url e ter todos os itens mostrados. MAS ISSO É UMA GAMBIARRA
-  private baseUrl = 'http://localhost:8090/api/productEntities'
+  // URLs base da API
+  private baseUrl = 'http://localhost:8090/api/productEntities';
+  private categoryUrl = 'http://localhost:8090/api/product-category';
 
   constructor(private httpClient: HttpClient) { }
 
+  // Método para buscar a lista de produtos pela categoria
   getProductList(theCategoryId: number): Observable<Product[]> {
-
-    //url construida com a url base + o id passado
     const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}`;
-
-
-    return this.httpClient.get<GetResponse>(searchUrl).pipe(
+    
+    return this.httpClient.get<GetResponseProducts>(searchUrl).pipe(
       tap(response => console.log(response)),
       map(response => response._embedded.productEntities)
     );
   }
+
+  // Método para buscar as categorias de produtos
+  getProductCategories(): Observable<ProductCategory[]> {
+    return this.httpClient.get<GetProductCategoriesResponse>(this.categoryUrl).pipe(
+      map(response => response._embedded.productCategory)
+    );
+  }
 }
 
-interface GetResponse{
+// Interface para o retorno de produtos
+interface GetResponseProducts {
   _embedded: {
     productEntities: Product[];
   }
+}
+
+// Interface para o retorno de categorias de produtos
+interface GetProductCategoriesResponse {
+  _embedded: { productCategory: ProductCategory[]; };
 }
