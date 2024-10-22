@@ -8,7 +8,7 @@ import { ProductCategory } from '../common/product-category';
   providedIn: 'root'
 })
 export class ProductService {
-  
+
   // URLs base da API
   private baseUrl = 'http://localhost:8090/api/productEntities';
   private categoryUrl = 'http://localhost:8090/api/product-category';
@@ -18,7 +18,17 @@ export class ProductService {
   // Método para buscar a lista de produtos pela categoria
   getProductList(theCategoryId: number): Observable<Product[]> {
     const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}`;
-    
+
+    return this.getProducts(searchUrl);
+  }
+
+  searchProducts(theKeyword: string): Observable<Product[]> {
+    const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${theKeyword}`;
+
+    return this.getProducts(searchUrl);
+  }
+
+  private getProducts(searchUrl: string): Observable<Product[]> {
     return this.httpClient.get<GetResponseProducts>(searchUrl).pipe(
       tap(response => console.log(response)),
       map(response => response._embedded.productEntities)
