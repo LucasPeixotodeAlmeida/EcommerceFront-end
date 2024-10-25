@@ -21,6 +21,12 @@ export class ProductService {
     return this.httpClient.get<Product>(productUrl);
   }
 
+  getProductListPaginate(thePage: number, thePageSize: number, theCategoryId: number): Observable<GetResponseProducts> {
+    const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}` + `&page=${thePage}&size=${thePageSize}`;
+
+    return this.httpClient.get<GetResponseProducts>(searchUrl);
+  }
+
   // Método para buscar a lista de produtos pela categoria
   getProductList(theCategoryId: number): Observable<Product[]> {
     const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}`;
@@ -53,6 +59,12 @@ export class ProductService {
 interface GetResponseProducts {
   _embedded: {
     productEntities: Product[];
+  },
+  page: {
+    size: number,
+    totalElements: number,
+    totalPages: number,
+    number: number
   }
 }
 
